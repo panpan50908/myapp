@@ -1,23 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interactive Demo</title>
-  <link rel="stylesheet" href="style.css" />
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Personal Image Quiz</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
-  <main class="page">
-    <section class="hero">
-      <h1>Interactive Demo</h1>
-      <p>Use the buttons below to apply styling and run JavaScript logic.</p>
-      <div class="controls">
-        <button id="themeButton" class="button">Toggle Dark Mode</button>
-        <button id="messageButton" class="button secondary">Show Message</button>
-      </div>
-      <div id="message" class="message hidden">Welcome! JavaScript is working.</div>
-    </section>
-  </main>
-  <script src="script.js"></script>
+
+<div class="container">
+
+<h1>📚 Personal Quiz Database</h1>
+
+<div class="menu">
+
+<button onclick="showPage('add')">
+➕ Add Question
+</button>
+
+<button onclick="showPage('practice')">
+🎯 Practice
+</button>
+
+<button onclick="showPage('category')">
+📂 Categories
+</button>
+
+<button onclick="showPage('setting')">
+⚙ Settings
+</button>
+
+</div>
+
+<!-- ===================== -->
+<!-- ADD QUESTION -->
+<!-- ===================== -->
+
+<div id="add" class="page">
+
+<h2>Add New Question</h2>
+
+<div class="paste-area" id="pasteArea">
+
+<h3>Paste Screenshot Here</h3>
+
+<p>CTRL + V then Press ENTER</p>
+
+<img id="preview">
+
+</div>
+
+<br>
+
+<label>
+
+Correct Answer
+
+<input
+type="text"
+id="answer"
+placeholder="Example: 4">
+
+</label>
+
+<br><br>
+
+<label>
+
+Question Number
+
+<input
+type="text"
+id="questionNumber"
+placeholder="Optional">
+
+</label>
+
+<br><br>
+
+<label>
+
+Category
+
+<select id="categorySelect">
+
+<option>Math Sequence Puzzle</option>
+
+<option>Spatial Intelligence</option>
+
+<option>Logic</option>
+
+</select>
+
+</label>
+
+<br><br>
+
+<button id="saveButton">
+
+💾 Save Question
+
+</button>
+
+</div>
+
+<!-- ===================== -->
+<!-- PRACTICE -->
+<!-- ===================== -->
+
+<div id="practice" class="page hidden">
+
+<h2>Practice</h2>
+
+<button class="bigButton">
+
+📖 Whole Database
+
+</button>
+
+<button class="bigButton">
+
+🎲 Random Practice
+
+</button>
+
+<button class="bigButton">
+
+📂 Practice by Category
+
+</button>
+
+</div>
+
+<!-- ===================== -->
+<!-- CATEGORY -->
+<!-- ===================== -->
+
+<div id="category" class="page hidden">
+
+<h2>Manage Categories</h2>
+
+<input
+type="text"
+id="newCategory"
+placeholder="New Category">
+
+<button>
+
+Add Category
+
+</button>
+
+<ul id="categoryList">
+
+<li>
+Math Sequence Puzzle
+<button>Delete</button>
+</li>
+
+<li>
+Spatial Intelligence
+<button>Delete</button>
+</li>
+
+<li>
+Logic
+<button>Delete</button>
+</li>
+
+</ul>
+
+</div>
+
+<!-- ===================== -->
+<!-- SETTINGS -->
+<!-- ===================== -->
+
+<div id="setting" class="page hidden">
+
+<h2>AI Settings</h2>
+
+<label>
+
+<input
+type="checkbox"
+checked>
+
+Enable OCR (Read Text)
+
+</label>
+
+<br><br>
+
+<label>
+
+<input
+type="checkbox"
+checked>
+
+Enable AI Auto Detect Answer
+
+</label>
+
+<br><br>
+
+<label>
+
+<input
+type="checkbox"
+checked>
+
+Auto Fill Question Number
+
+</label>
+
+</div>
+
+</div>
+
+<script>
+
+function showPage(page){
+
+document.querySelectorAll(".page").forEach(p=>{
+
+p.classList.add("hidden")
+
+})
+
+document.getElementById(page).classList.remove("hidden")
+
+}
+
+</script>
+
 </body>
 </html>
