@@ -645,3 +645,368 @@ function randomQuestion(){
     );
 
 }
+
+// ======================================
+// PART 3
+// Practice System
+// ======================================
+
+let practiceList = [];
+
+let currentQuestion = 0;
+
+let correctScore = 0;
+
+let totalScore = 0;
+
+// Elements
+
+const practiceImage =
+document.getElementById("practiceImage");
+
+const userAnswer =
+document.getElementById("userAnswer");
+
+const checkBtn =
+document.getElementById("checkAnswerBtn");
+
+const resultText =
+document.getElementById("resultText");
+
+const scoreText =
+document.getElementById("scoreText");
+
+const nextBtn =
+document.getElementById("nextBtn");
+
+const prevBtn =
+document.getElementById("prevBtn");
+
+const randomBtn =
+document.getElementById("randomBtn");
+
+
+// ======================================
+// Start Practice
+// ======================================
+
+function startPractice(){
+
+    if(quizDatabase.length==0){
+
+        alert("No Questions");
+
+        return;
+
+    }
+
+    practiceList = [...quizDatabase];
+
+    currentQuestion = 0;
+
+    loadPracticeQuestion();
+
+}
+
+
+// ======================================
+// Practice By Category
+// ======================================
+
+function startCategoryPractice(cat){
+
+    practiceList =
+
+    quizDatabase.filter(function(q){
+
+        return q.category == cat;
+
+    });
+
+    if(practiceList.length==0){
+
+        alert("No Questions");
+
+        return;
+
+    }
+
+    currentQuestion = 0;
+
+    loadPracticeQuestion();
+
+}
+
+
+// ======================================
+// Load Question
+// ======================================
+
+function loadPracticeQuestion(){
+
+    if(practiceList.length==0)
+
+        return;
+
+    const q =
+
+    practiceList[currentQuestion];
+
+    practiceImage.src = q.image;
+
+    userAnswer.value = "";
+
+    resultText.innerHTML = "";
+
+}
+
+
+// ======================================
+// Check Answer
+// ======================================
+
+function checkAnswer(){
+
+    const q =
+
+    practiceList[currentQuestion];
+
+    totalScore++;
+
+    if(
+
+        userAnswer.value
+
+        .trim()
+
+        .toLowerCase()
+
+        ==
+
+        q.answer
+
+        .toLowerCase()
+
+    ){
+
+        correctScore++;
+
+        resultText.innerHTML =
+
+        "✅ Correct";
+
+    }
+
+    else{
+
+        resultText.innerHTML =
+
+        "❌ Wrong<br>Correct: "
+
+        + q.answer;
+
+    }
+
+    scoreText.innerHTML =
+
+    "Score: "
+
+    + correctScore +
+
+    " / "
+
+    + totalScore;
+
+}
+
+
+// ======================================
+// Next
+// ======================================
+
+function nextQuestion(){
+
+    if(
+
+        currentQuestion
+
+        <
+
+        practiceList.length - 1
+
+    ){
+
+        currentQuestion++;
+
+        loadPracticeQuestion();
+
+    }
+
+}
+
+
+// ======================================
+// Previous
+// ======================================
+
+function previousQuestion(){
+
+    if(currentQuestion > 0){
+
+        currentQuestion--;
+
+        loadPracticeQuestion();
+
+    }
+
+}
+
+
+// ======================================
+// Random
+// ======================================
+
+function randomPractice(){
+
+    if(practiceList.length==0)
+
+        return;
+
+    currentQuestion =
+
+    Math.floor(
+
+        Math.random()
+
+        * practiceList.length
+
+    );
+
+    loadPracticeQuestion();
+
+}
+
+
+// ======================================
+// Event Listeners
+// ======================================
+
+if(checkBtn){
+
+    checkBtn.addEventListener(
+
+        "click",
+
+        checkAnswer
+
+    );
+
+}
+
+if(nextBtn){
+
+    nextBtn.addEventListener(
+
+        "click",
+
+        nextQuestion
+
+    );
+
+}
+
+if(prevBtn){
+
+    prevBtn.addEventListener(
+
+        "click",
+
+        previousQuestion
+
+    );
+
+}
+
+if(randomBtn){
+
+    randomBtn.addEventListener(
+
+        "click",
+
+        randomPractice
+
+    );
+
+}
+
+
+// ======================================
+// ENTER = CHECK
+// ======================================
+
+userAnswer.addEventListener(
+
+    "keydown",
+
+    function(e){
+
+        if(e.key=="Enter"){
+
+            checkAnswer();
+
+        }
+
+    }
+
+);
+
+
+// ======================================
+// Shuffle
+// ======================================
+
+function shufflePractice(){
+
+    for(
+
+        let i =
+
+        practiceList.length - 1;
+
+        i > 0;
+
+        i--
+
+    ){
+
+        const j =
+
+        Math.floor(
+
+            Math.random()
+
+            * (i + 1)
+
+        );
+
+        [
+
+            practiceList[i],
+
+            practiceList[j]
+
+        ]
+
+        =
+
+        [
+
+            practiceList[j],
+
+            practiceList[i]
+
+        ];
+
+    }
+
+}
