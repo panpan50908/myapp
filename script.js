@@ -304,3 +304,344 @@ function databaseStats() {
     );
 
 }
+// =======================================
+// PART 2
+// Category Management + Gallery
+// =======================================
+
+// ---------- Category Database ----------
+
+let categories =
+JSON.parse(localStorage.getItem("quizCategories")) || [
+
+    "Math Sequence Puzzle",
+
+    "Spatial Intelligence",
+
+    "Logic"
+
+];
+
+const newCategoryInput =
+document.getElementById("newCategory");
+
+const categoryList =
+document.getElementById("categoryList");
+
+// ---------- Load Categories ----------
+
+function loadCategories(){
+
+    categorySelect.innerHTML = "";
+
+    categoryList.innerHTML = "";
+
+    categories.forEach(function(cat){
+
+        // Dropdown
+
+        let option =
+        document.createElement("option");
+
+        option.textContent = cat;
+
+        option.value = cat;
+
+        categorySelect.appendChild(option);
+
+        // Category List
+
+        let li =
+        document.createElement("li");
+
+        li.textContent = cat + " ";
+
+        let btn =
+        document.createElement("button");
+
+        btn.textContent = "Delete";
+
+        btn.onclick = function(){
+
+            deleteCategory(cat);
+
+        };
+
+        li.appendChild(btn);
+
+        categoryList.appendChild(li);
+
+    });
+
+}
+
+loadCategories();
+
+
+// ---------- Add Category ----------
+
+function addCategory(){
+
+    const name =
+    newCategoryInput.value.trim();
+
+    if(name==""){
+
+        alert("Category name required.");
+
+        return;
+
+    }
+
+    if(categories.includes(name)){
+
+        alert("Category already exists.");
+
+        return;
+
+    }
+
+    categories.push(name);
+
+    localStorage.setItem(
+
+        "quizCategories",
+
+        JSON.stringify(categories)
+
+    );
+
+    newCategoryInput.value="";
+
+    loadCategories();
+
+}
+
+const addButton =
+document.querySelector("#category button");
+
+if(addButton){
+
+    addButton.addEventListener(
+
+        "click",
+
+        addCategory
+
+    );
+
+}
+
+// ---------- Delete Category ----------
+
+function deleteCategory(name){
+
+    if(!confirm("Delete category?"))
+
+        return;
+
+    categories =
+    categories.filter(function(c){
+
+        return c != name;
+
+    });
+
+    localStorage.setItem(
+
+        "quizCategories",
+
+        JSON.stringify(categories)
+
+    );
+
+    loadCategories();
+
+}
+
+
+// =======================================
+// Gallery
+// =======================================
+
+const gallery =
+document.getElementById("gallery");
+
+function renderGallery(){
+
+    if(!gallery) return;
+
+    gallery.innerHTML="";
+
+    if(quizDatabase.length==0){
+
+        gallery.innerHTML="<h3>No Questions Yet</h3>";
+
+        return;
+
+    }
+
+    quizDatabase.forEach(function(q){
+
+        let card =
+        document.createElement("div");
+
+        card.className="card";
+
+        let img =
+        document.createElement("img");
+
+        img.src=q.image;
+
+        img.width=200;
+
+        img.style.cursor="pointer";
+
+        img.onclick=function(){
+
+            alert(
+
+                "Answer: "
+
+                +q.answer+
+
+                "\nCategory: "
+
+                +q.category+
+
+                "\nQuestion #: "
+
+                +q.number
+
+            );
+
+        };
+
+        let del =
+        document.createElement("button");
+
+        del.textContent="Delete";
+
+        del.onclick=function(){
+
+            if(confirm("Delete question?")){
+
+                deleteQuestion(q.id);
+
+                renderGallery();
+
+            }
+
+        };
+
+        card.appendChild(img);
+
+        card.appendChild(document.createElement("br"));
+
+        card.appendChild(del);
+
+        gallery.appendChild(card);
+
+    });
+
+}
+
+renderGallery();
+
+
+// =======================================
+// Update Gallery after Saving
+// =======================================
+
+const oldSaveQuestion = saveQuestion;
+
+saveQuestion = function(){
+
+    oldSaveQuestion();
+
+    renderGallery();
+
+}
+
+
+// =======================================
+// Search by Category
+// =======================================
+
+function showCategory(category){
+
+    if(!gallery) return;
+
+    gallery.innerHTML="";
+
+    quizDatabase
+
+    .filter(function(q){
+
+        return q.category==category;
+
+    })
+
+    .forEach(function(q){
+
+        let img =
+        document.createElement("img");
+
+        img.src=q.image;
+
+        img.width=200;
+
+        img.style.margin="10px";
+
+        gallery.appendChild(img);
+
+    });
+
+}
+
+
+// =======================================
+// Random Question
+// =======================================
+
+function randomQuestion(){
+
+    if(quizDatabase.length==0){
+
+        alert("Database Empty");
+
+        return;
+
+    }
+
+    const random =
+
+    quizDatabase[
+
+        Math.floor(
+
+            Math.random()
+
+            *quizDatabase.length
+
+        )
+
+    ];
+
+    alert(
+
+        "Question #"
+
+        +random.number+
+
+        "\nCategory: "
+
+        +random.category+
+
+        "\nAnswer: "
+
+        +random.answer
+
+    );
+
+}
