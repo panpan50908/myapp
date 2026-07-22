@@ -1010,3 +1010,279 @@ function shufflePractice(){
     }
 
 }
+
+// ======================================
+// PART 4A
+// AI OCR with Tesseract.js
+// ======================================
+
+// OCR Result
+let ocrText = "";
+
+// Progress Box
+const progressBox = document.createElement("div");
+
+progressBox.style.position = "fixed";
+progressBox.style.bottom = "20px";
+progressBox.style.right = "20px";
+progressBox.style.padding = "10px";
+progressBox.style.background = "black";
+progressBox.style.color = "white";
+progressBox.style.display = "none";
+progressBox.style.zIndex = "9999";
+
+document.body.appendChild(progressBox);
+
+
+// ======================================
+// OCR Function
+// ======================================
+
+async function readImageText(imageData){
+
+    if(imageData==""){
+
+        alert("Paste an image first.");
+
+        return;
+
+    }
+
+    progressBox.style.display="block";
+
+    progressBox.innerHTML="Starting OCR...";
+
+    const result = await Tesseract.recognize(
+
+        imageData,
+
+        "eng",
+
+        {
+
+            logger:function(m){
+
+                if(m.status=="recognizing text"){
+
+                    progressBox.innerHTML=
+
+                    "Reading... "
+
+                    +
+
+                    Math.floor(
+
+                        m.progress*100
+
+                    )
+
+                    +
+
+                    "%";
+
+                }
+
+            }
+
+        }
+
+    );
+
+    progressBox.style.display="none";
+
+    ocrText=result.data.text;
+
+    console.clear();
+
+    console.log("========== OCR ==========");
+
+    console.log(ocrText);
+
+    autoFill();
+
+}
+
+
+// ======================================
+// OCR Button
+// ======================================
+
+const ocrButton=document.createElement("button");
+
+ocrButton.innerHTML="🤖 Read Image";
+
+ocrButton.style.marginTop="10px";
+
+pasteArea.appendChild(ocrButton);
+
+ocrButton.onclick=function(){
+
+    readImageText(pastedImage);
+
+};
+
+
+// ======================================
+// Auto Fill
+// ======================================
+
+function autoFill(){
+
+    if(ocrText=="") return;
+
+    // Guess Question Number
+
+    let number=
+
+    ocrText.match(/\d+/);
+
+    if(
+
+        number
+
+        &&
+
+        numberInput.value==""
+
+    ){
+
+        numberInput.value=
+
+        number[0];
+
+    }
+
+    // Guess Answer
+
+    let answer=
+
+    ocrText.match(
+
+        /Answer[: ]+([A-Za-z0-9]+)/i
+
+    );
+
+    if(
+
+        answer
+
+        &&
+
+        answerInput.value==""
+
+    ){
+
+        answerInput.value=
+
+        answer[1];
+
+    }
+
+}
+
+
+// ======================================
+// Save OCR Text
+// ======================================
+
+const originalSave=saveQuestion;
+
+saveQuestion=function(){
+
+    if(pastedImage==""){
+
+        alert("Paste image first.");
+
+        return;
+
+    }
+
+    const oldLength=
+
+    quizDatabase.length;
+
+    originalSave();
+
+    if(
+
+        quizDatabase.length>
+
+        oldLength
+
+    ){
+
+        quizDatabase[
+
+            quizDatabase.length-1
+
+        ].ocr=ocrText;
+
+        localStorage.setItem(
+
+            "quizDatabase",
+
+            JSON.stringify(
+
+                quizDatabase
+
+            )
+
+        );
+
+    }
+
+};
+
+
+// ======================================
+// Search OCR Text
+// ======================================
+
+function searchText(keyword){
+
+    return quizDatabase.filter(function(q){
+
+        if(!q.ocr)
+
+            return false;
+
+        return q.ocr
+
+        .toLowerCase()
+
+        .includes(
+
+            keyword.toLowerCase()
+
+        );
+
+    });
+
+}
+
+
+// ======================================
+// OCR Statistics
+// ======================================
+
+function showOCR(){
+
+    quizDatabase.forEach(function(q){
+
+        console.log(
+
+            "Question",
+
+            q.number
+
+        );
+
+        console.log(
+
+            q.ocr
+
+        );
+
+    });
+
+}
